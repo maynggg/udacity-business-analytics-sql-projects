@@ -1,17 +1,21 @@
--- QUIZ MORE ON SUBQUERIES
+-- Quiz: Your subqueries
+-- Find the average number of events for each channel
+SELECT AVG (events) as avg_event, channel
+FROM    (SELECT COUNT (*) as events, DATE_TRUNC ('day', occurred_at) occur_day, channel
+        FROM web_events 
+        GROUP BY 2, 3) sub
+        GROUP BY channel
+        ORDER BY 1 DESC;
+
+-- Quiz: MORE ON SUBQUERIES
+-- Find only the orders that took place in the same month and year as the first order, and then pull the average for each type of paper quantity in this month
 SELECT AVG (standard_qty) avg_standard, AVG (gloss_qty) avg_gloss, AVG (poster_qty) avg_poster
 FROM orders
 WHERE DATE_TRUNC ('month', occurred_at) =
 (SELECT DATE_TRUNC ('month', MIN (occurred_at))
 FROM orders);
 
-SELECT SUM (total_amt_usd)
-FROM orders
-WHERE DATE_TRUNC ('month', occurred_at) =
-(SELECT DATE_TRUNC ('month', MIN (occurred_at))
-FROM orders);
-
--- QUIZ SUBQUERY MANIA
+-- Quiz: SUBQUERY MANIA
 -- 1. Provide the name of the sales_rep in each region with the largest amount of total_amt_usd sales.
 SELECT sub3.sales_reps_name, sub2.region_name, sub2.max_amt
 FROM
@@ -126,7 +130,7 @@ FROM
         (SELECT AVG(total_amt_usd) avg_all
         FROM orders)) sub; 
 
--- QUIZ WITH 
+-- Quiz: WITH 
 -- 1. Provide the name of the sales_rep in each region with the largest amount of total_amt_usd sales.
 WITH sub1 AS (SELECT s.name sales_reps_name, r.name region_name, SUM (o.total_amt_usd) total_amt
         FROM region r

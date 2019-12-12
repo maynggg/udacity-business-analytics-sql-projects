@@ -1,5 +1,5 @@
 -- QUESTION SET 2
-
+-- Use your query to return the email, first name, last name, and Genre of all Rock Music listeners. Return your list ordered alphabetically by email address starting with A.
 SELECT c.Email, c.FirstName, c.LastName, g.Name
 FROM Customer c
 JOIN Invoice i
@@ -14,6 +14,7 @@ WHERE g.Name = 'Rock'
 GROUP BY 1, 2, 3
 ORDER BY 1;
 
+-- 2. Write a query that returns the Artist name and total track count of the top 10 rock bands.
 SELECT a.ArtistId, a.Name, COUNT (t.TrackId) AS songs
 FROM Artist a
 JOIN Album al
@@ -27,6 +28,7 @@ GROUP BY 1, 2
 ORDER BY 3 DESC
 LIMIT 10; 
 
+-- 3. Find which artist has earned the most according to the InvoiceLines? 
 SELECT a.ArtistId, a.Name, SUM(il.UnitPrice*il.Quantity) AS Amount
 FROM Artist a
 JOIN Album al
@@ -38,6 +40,7 @@ ON t.TrackId = il.TrackId
 GROUP BY 1, 2
 ORDER BY 3 DESC; 
 
+-- 4. Find which customer spent the most on this artist.
 SELECT a.ArtistId, a.Name, c.CustomerId, c.FirstName, c.LastName, SUM(il.UnitPrice*il.Quantity) AS amount_spent
 FROM Artist a
 JOIN Album al
@@ -55,8 +58,7 @@ GROUP BY 1, 2, 3, 4, 5
 ORDER BY 6 DESC; 
 
 -- QUESTION SET 3
--- QUESTION 1 
-
+-- 1. find out the most popular music Genre for each country. We determine the most popular genre as the genre with the highest amount of purchases. Write a query that returns each country along with the top Genre. For countries where the maximum number of purchases is shared return all Genres.
 SELECT sub2.GenreId, sub2.Name, sub2.BillingCountry, sub2.Purchases
 FROM
 (
@@ -87,8 +89,7 @@ JOIN
     GROUP BY 1, 2, 3) sub2
 ON sub2.BillingCountry = max_purchase.BillingCountry AND sub2.Purchases = max_purchase.Purchases;
 
--- QUESTION SET 3
--- QUESTION 2
+-- 2. Return all the track names that have a song length longer than the average song length
 SELECT Name, Milliseconds
 FROM Track
 WHERE Milliseconds > 
@@ -96,8 +97,7 @@ WHERE Milliseconds >
 	FROM Track)
 ORDER BY Milliseconds DESC; 
 
--- QUESTION SET 3
--- QUESTION 3
+-- 3. Write a query that determines the customer that has spent the most on music for each country. Write a query that returns the country along with the top customer and how much they spent. For countries where the top amount spent is shared, provide all customers who spent this amount.
 SELECT sub2.Country, sub2.total_spent, sub2.FirstName, sub2.LastName, sub2.CustomerId
 FROM
 (
@@ -120,10 +120,8 @@ JOIN (
 	GROUP BY 1,3,4,5) sub2
 ON sub2.Country = max_total_spent.Country AND sub2.total_spent = max_total_spent.total_spent;
 
-
 -- PROJECT PRESENTATION
--- QUESTION 1: Which countries have the highest amount of purchases of MPEG audio file? 
-
+-- 1. Which countries have the highest amount of purchases of MPEG audio file? 
 SELECT i.BillingCountry, m.Name, SUM (il.Quantity) Purchases
 FROM Invoice i
 JOIN InvoiceLine il
@@ -136,8 +134,7 @@ WHERE m.Name = "MPEG audio file"
 GROUP BY 1,2
 ORDER BY 3 DESC;
 
--- PROJECT PRESENTATION
--- QUESTION 2: Which employees support the most customers?
+-- 2. Which employees support the most customers?
 
 SELECT e.EmployeeId, e.FirstName || ' ' || e.LastName EmployeeName, COUNT (c.CustomerId) SupportingTotal
 FROM Employee e
@@ -146,8 +143,7 @@ ON e.EmployeeId = c.SupportRepId
 GROUP BY 1
 ORDER BY 2 DESC;
 
--- PROJECT PRESENTATION
--- QUESTION 3: Which artists have the most number of Pop songs? 
+-- 3. Which artists have the most number of Pop songs? 
 SELECT a.Name, COUNT (t.TrackId) No_Of_Songs
 FROM Artist a
 JOIN Album al
@@ -160,9 +156,7 @@ WHERE g.Name = "Pop"
 GROUP BY 1
 ORDER BY 2 DESC;
 
--- PROJECT PRESENTATION
--- QUESTION 4: How many artists are there per each income level (with the income from the music store higher than the average artist income considered as "High", equal to the average as "Average" and lower than average as "Low")
-
+-- 4. How many artists are there per each income level (with the income from the music store higher than the average artist income considered as "High", equal to the average as "Average" and lower than average as "Low")
 SELECT sub2.Income_Level, COUNT (*) AS Number_Of_Artists
 FROM
 (
